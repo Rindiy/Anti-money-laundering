@@ -1,96 +1,113 @@
-# Fraud Detection System for Money Laundering
+# **Fraud Detection System for Money Laundering**
 
-## Overview
+This project is a Flask-based web application designed to predict fraudulent transactions and identify potential money laundering activities. It uses XGBoost for predictions in the Flask app, while a separate Random Forest model is implemented and evaluated in a standalone Jupyter notebook.
 
-This project is designed to detect suspicious transactions and identify potential money laundering activities using machine learning algorithms. The system processes transaction data to classify whether a transaction is likely to be involved in laundering.
+---
 
-## Features
-- Preprocessing of transaction data to handle categorical and numerical variables.
-- Balanced sampling to address class imbalance in the dataset.
-- Machine learning model (Random Forest Classifier) for transaction classification.
-- ROC-AUC evaluation for performance measurement.
-- Example predictions to test the system.
-- Saved models and encoders for deployment.
+## **Features**
+- **Frontend**: Interactive web interface for transaction input.
+- **Backend**: Flask application serving predictions using the trained XGBoost model.
+- **Random Forest**: A separate notebook for training and evaluation.
+- **Data Preprocessing**: Label encoding for categorical variables and feature transformation.
+- **API**: `/predict` endpoint for real-time fraud detection.
+- **Modular Design**: Organized directory structure for ease of development and scalability.
 
-## Requirements
-- Python 3.8+
-- Libraries: 
-  - `numpy`
-  - `pandas`
-  - `seaborn`
-  - `matplotlib`
-  - `scikit-learn`
-  - `joblib`
+---
 
-## Dataset
-- **Input File:** `/inputtt.csv` (Replace with your dataset path)
-- **Structure:**
-  - `Time`, `Date`: Transaction timestamp.
-  - `Sender_account`, `Receiver_account`: IDs of the accounts involved.
-  - `Amount`: Transaction amount.
-  - `Payment_currency`, `Received_currency`: Currencies used.
-  - `Sender_bank_location`, `Receiver_bank_location`: Bank locations.
-  - `Payment_type`: Mode of payment.
-  - `Laundering_type`: Suspected laundering methods.
-  - `Is_laundering`: Target variable (1 for laundering, 0 otherwise).
-
-## Preprocessing
-1. **Data Cleaning:**
-   - Removed duplicates and handled null values.
-2. **Feature Selection:**
-   - Excluded non-predictive features like `Time`, `Date`, `Sender_account`, `Receiver_account`.
-3. **Encoding:**
-   - Used OneHotEncoder to transform categorical features.
-   - Saved encoder as `encoder.pkl`.
-
-## Model Training
-- Algorithm: Random Forest Classifier
-- Parameters: 
-  - `max_depth=10`
-  - `n_estimators=50`
-  - `random_state=42`
-- Training Accuracy: **99.66%**
-- Testing Accuracy: **99.53%**
-- ROC-AUC Score: **0.9997**
-
-## Evaluation
-- Confusion Matrix:
-  ```
-  [[2985   15]
-   [   9 2102]]
-  ```
-- Classification Report:
-  ```
-               precision    recall  f1-score   support
-           0       1.00      0.99      1.00      3000
-           1       0.99      1.00      0.99      2111
-  ```
-
-## Example Prediction
-To test the model, you can provide a transaction example:
-```python
-example = {
-    "amount": [1415.59],
-    "Payment_currency": ["UK pounds"],
-    "Received_currency": ["UK pounds"],
-    "Sender_bank_location": ["UK"],
-    "Receiver_bank_location": ["UK"],
-    "Payment_type": ["Cash Deposit"],
-    "Laundering_type": ["Normal_Plus_Mutual"]
-}
+## **Directory Structure**
 ```
-Run the script to get the prediction.
+Frontend/
+├── app/
+│   ├── templates/
+│   │   └── index.html          # Frontend HTML file
+│   ├── app.py                  # Flask application
+├── data/
+│   └── test.txt                # Sample test data
+├── models/
+│   ├── label_encoders.pkl      # Pickled label encoders
+│   ├── xgb_model.json          # Trained XGBoost model
+├── notebooks/
+│   ├── Untitled4.ipynb         # XGBoost training notebook
+│   └── Anti_money_laundering_Randomforest.ipynb # Random Forest notebook
+├── requirements.txt            # Python dependencies
+└── README.md                   # Project documentation
+```
 
-## Deployment
-- Saved Model: `money_laundering.pkl`
-- Saved Encoder: `encoder.pkl`
+---
 
-## Visualization
-- Confusion matrix heatmap for model evaluation.
+## **Installation**
 
-## Usage
-1. **Train the Model:**
-   Run the script to preprocess data, train the model, and save it.
-2. **Predict New Transactions:**
-   Load the saved model and encoder to classify new transactions.
+1. **Clone the Repository**:
+   ```bash
+   git clone <repository_url>
+   cd Frontend
+   ```
 
+2. **Install Dependencies**:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+3. **Prepare Models**:
+   - Train the XGBoost model using the dataset provided in the `notebooks/Untitled4.ipynb`.
+   - Save the trained XGBoost model as `xgb_model.json`.
+   - Save the label encoders as `label_encoders.pkl`.
+   - Place these files in the `models/` directory.
+
+4. **Run the Flask Application**:
+   ```bash
+   python app/app.py
+   ```
+
+5. **Access the Application**:
+   - Open a browser and navigate to `http://127.0.0.1:5000/`.
+
+---
+
+## **Usage**
+
+1. **Frontend**:
+   - Access the web interface via the browser.
+   - Enter transaction details like `Sender_account`, `Receiver_account`, etc.
+   - Submit the form to get predictions.
+
+2. **API**:
+   - Use the `/predict` endpoint to send JSON data for prediction.
+   - Example JSON format:
+     ```json
+     {
+       "Sender_account": "12345",
+       "Receiver_account": "67890",
+       "Sender_bank_location": "Location_A",
+       "Receiver_bank_location": "Location_B",
+       "Laundering_type": "Type_X"
+     }
+     ```
+
+---
+
+## **Endpoints**
+| **Endpoint** | **Method** | **Description**                              |
+|--------------|------------|----------------------------------------------|
+| `/`          | GET        | Renders the frontend HTML.                  |
+| `/predict`   | POST       | Accepts JSON input and returns predictions. |
+
+---
+
+## **Model Details**
+- **XGBoost**:
+  - Trained using the dataset in the `notebooks/Untitled4.ipynb`.
+  - Used for real-time fraud detection in the Flask application.
+- **Random Forest**:
+  - Trained and evaluated separately in the `notebooks/Anti_money_laundering_Randomforest.ipynb`.
+  - Provides additional insights and serves as a benchmark model.
+- **Preprocessing**:
+  - Label encoding for categorical variables.
+  - Numeric conversion for account IDs.
+
+---
+
+## **Acknowledgments**
+- **Dataset**: [Anti Money Laundering Transaction Data (SAML-D)](https://www.kaggle.com/datasets).  
+
+---
